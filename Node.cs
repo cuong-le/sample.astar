@@ -6,16 +6,16 @@
         public readonly int Y;
         public readonly bool Walkable;
 
-        public Node(int x, int y, bool walkable)
+        public Node(int x, int y, Map map)
         {
             X = x;
             Y = y;
-            Walkable = walkable;
+            Walkable = map != null && map.IsWalkable(x, y);
         }
 
         public Node Parent { get; set; }
         public int G { get; set; }
-        public int H { get; set; }
-        public int F { get { return G + H; } }
+        public float H { get; set; }
+        public float F { get { return G + H; } }
     }
 }

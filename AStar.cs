@@ -8,8 +8,8 @@ namespace CGS.Sample.AStar
     {
         public static Stack<Node> Find(int width, int height, Tuple<int, int, int, int> points, Map map)
         {
-            var startNode = new Node(points.Item1, points.Item2, false);
-            var endNode = new Node(points.Item3, points.Item4, false);
+            var startNode = new Node(points.Item1, points.Item2, map);
+            var endNode = new Node(points.Item3, points.Item4, map);
             endNode = _aStar(startNode, endNode, map);
 
             var path = _findPath(startNode, endNode, map);
@@ -35,10 +35,10 @@ namespace CGS.Sample.AStar
                 closed.Add(current.Key, current.Value);
 
                 foreach (var near in new Node[] {
-                    new Node(current.Value.X + 1, current.Value.Y, map.IsWalkable(current.Value.X + 1, current.Value.Y)),
-                    new Node(current.Value.X, current.Value.Y + 1, map.IsWalkable(current.Value.X, current.Value.Y + 1)),
-                    new Node(current.Value.X - 1, current.Value.Y, map.IsWalkable(current.Value.X - 1, current.Value.Y)),
-                    new Node(current.Value.X, current.Value.Y - 1, map.IsWalkable(current.Value.X, current.Value.Y - 1))
+                    new Node(current.Value.X + 1, current.Value.Y, map),
+                    new Node(current.Value.X, current.Value.Y + 1, map),
+                    new Node(current.Value.X - 1, current.Value.Y, map),
+                    new Node(current.Value.X, current.Value.Y - 1, map)
                 })
                 {
                     var newKey = $"{near.X}{near.Y}";
@@ -50,7 +50,7 @@ namespace CGS.Sample.AStar
                     {
                         var node = open[newKey];
 
-                        var g = Math.Abs(near.X - startNode.X) + Math.Abs(near.Y - startNode.Y);
+                        var g = 10 + node.Parent.G;
 
                         if (g < node.G)
                         {
@@ -60,8 +60,8 @@ namespace CGS.Sample.AStar
                     }
                     else
                     {
-                        near.G = Math.Abs(near.X - startNode.X) + Math.Abs(near.Y - startNode.Y);
-                        near.H = Math.Abs(near.X - endNode.X) + Math.Abs(near.Y - endNode.Y);
+                        near.G = 10 + current.Value.G;
+                        near.H = (float)Math.Sqrt(Math.Pow(near.X - endNode.X, 2) + Math.Pow(near.Y - endNode.Y, 2));
                         near.Parent = current.Value;
                         open.Add(newKey, near);
                     }
@@ -87,7 +87,7 @@ namespace CGS.Sample.AStar
         {
             var path = new Stack<Node>();
 
-            var node = new Node(endNode.X, endNode.Y, map.IsWalkable(endNode.X, endNode.Y))
+            var node = new Node(endNode.X, endNode.Y, map)
             {
                 Parent = endNode.Parent
             };
