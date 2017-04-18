@@ -27,18 +27,17 @@ namespace CGS.Sample.AStar
             while (true)
             {
                 var current = _getSmallestOpen(open);
+                var currentKey = current.Key;
+                var currentNode = current.Value;
 
-                if (current.Value.X == endNode.X && current.Value.Y == endNode.Y)
-                    return current.Value;
+                if (currentNode.X == endNode.X && currentNode.Y == endNode.Y)
+                    return currentNode;
 
-                open.Remove(current.Key);
-                closed.Add(current.Key, current.Value);
+                open.Remove(currentKey);
+                closed.Add(currentKey, currentNode);
 
                 foreach (var near in new Node[] {
-                    new Node(current.Value.X + 1, current.Value.Y, map),
-                    new Node(current.Value.X, current.Value.Y + 1, map),
-                    new Node(current.Value.X - 1, current.Value.Y, map),
-                    new Node(current.Value.X, current.Value.Y - 1, map)
+                    currentNode.Up(), currentNode.Down(), currentNode.Left(), currentNode.Right()
                 })
                 {
                     var newKey = $"{near.X}{near.Y}";
@@ -50,23 +49,34 @@ namespace CGS.Sample.AStar
                     {
                         var node = open[newKey];
 
-                        var g = 10 + node.Parent.G;
+                        var g = _getG(node, map);
 
-                        if (g < node.G)
+                        if (g < node.Parent.G)
                         {
                             node.G = g;
-                            node.Parent = current.Value;
+                            node.H = _getH(node, endNode);
+                            node.Parent = currentNode;
                         }
                     }
                     else
                     {
-                        near.G = 10 + current.Value.G;
-                        near.H = (float)Math.Sqrt(Math.Pow(near.X - endNode.X, 2) + Math.Pow(near.Y - endNode.Y, 2));
-                        near.Parent = current.Value;
+                        near.G = _getG(near, map);
+                        near.H = _getH(near, endNode);
+                        near.Parent = currentNode;
                         open.Add(newKey, near);
                     }
                 }
             }
+        }
+        private static int _getG(Node node, Map map)
+        {
+            return map.IsWalkable(node.X, node.Y) ? 9 : 1;
+        }
+        private static float _getH(Node node, Node endNode)
+        {
+            var X = node.X - endNode.X;
+            var Y = node.Y - endNode.Y;
+            return (float)Math.Sqrt((X * X) + (Y * Y));
         }
         private static KeyValuePair<string, Node> _getSmallestOpen(Dictionary<string, Node> open)
         {
