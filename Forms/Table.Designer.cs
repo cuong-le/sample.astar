@@ -1,4 +1,4 @@
-﻿namespace CGS.Sample.AStar
+﻿namespace CGS.Sample.AStar.Forms
 {
     partial class Table
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace CGS.Sample.AStar
+namespace CGS.Sample.AStar.Forms
 {
     public partial class Start : Form
     {

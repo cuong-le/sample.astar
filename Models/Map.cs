@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CGS.Sample.AStar.Const;
+using CGS.Sample.AStar.Infractstructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CGS.Sample.AStar
+namespace CGS.Sample.AStar.Models
 {
     public class Map
     {
@@ -38,7 +40,7 @@ namespace CGS.Sample.AStar
         {
             var points = _validateFind();
 
-            var path = AStar.Find(Width, Height, points, this);
+            var path = Algorithm.AStar.Find(Width, Height, points, this);
 
             _fillPath(path);
         }

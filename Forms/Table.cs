@@ -1,8 +1,10 @@
-﻿using System;
+﻿using CGS.Sample.AStar.Infractstructure;
+using CGS.Sample.AStar.Models;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CGS.Sample.AStar
+namespace CGS.Sample.AStar.Forms
 {
     public partial class Table : Form
     {

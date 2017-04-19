@@ -1,8 +1,9 @@
-﻿using System;
+﻿using CGS.Sample.AStar.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CGS.Sample.AStar
+namespace CGS.Sample.AStar.Algorithm
 {
     public class AStar
     {

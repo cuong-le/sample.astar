@@ -1,4 +1,4 @@
-﻿namespace CGS.Sample.AStar
+﻿namespace CGS.Sample.AStar.Const
 {
     public class Symbol
     {
