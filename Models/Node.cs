@@ -1,4 +1,6 @@
-﻿namespace CGS.Sample.AStar.Models
+﻿using CGS.Sample.AStar.Const;
+
+namespace CGS.Sample.AStar.Models
 {
     public class Node
     {
@@ -13,6 +15,7 @@
             X = x;
             Y = y;
             Walkable = _map.IsWalkable(x, y);
+            Direction = Direction.None;
         }
 
         public Node Parent { get; set; }
@@ -20,21 +23,31 @@
         public float H { get; set; }
         public float F { get { return G + H; } }
 
+        public Direction Direction { get; private set; }
+
         public Node Up()
         {
-            return new Node(X, Y + 1, _map);
+            var node = new Node(X, Y + 1, _map);
+            node.Direction = Direction.Up;
+            return node;
         }
         public Node Down()
         {
-            return new Node(X, Y - 1, _map);
+            var node = new Node(X, Y - 1, _map);
+            node.Direction = Direction.Down;
+            return node;
         }
         public Node Left()
         {
-            return new Node(X - 1, Y, _map);
+            var node = new Node(X - 1, Y, _map);
+            node.Direction = Direction.Left;
+            return node;
         }
         public Node Right()
         {
-            return new Node(X + 1, Y, _map);
+            var node = new Node(X + 1, Y, _map);
+            node.Direction = Direction.Right;
+            return node;
         }
     }
 }

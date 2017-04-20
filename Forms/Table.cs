@@ -1,4 +1,5 @@
-﻿using CGS.Sample.AStar.Infractstructure;
+﻿using CGS.Sample.AStar.Const;
+using CGS.Sample.AStar.Infractstructure;
 using CGS.Sample.AStar.Models;
 using System;
 using System.Drawing;
@@ -38,7 +39,7 @@ namespace CGS.Sample.AStar.Forms
             grid_Map.MultiSelect = false;
             grid_Map.ReadOnly = true;
 
-            _sizeChanged();
+            _randomMap();
         }
 
         private void AStar_FormClosed(object sender, FormClosedEventArgs e)
@@ -56,17 +57,21 @@ namespace CGS.Sample.AStar.Forms
             _valiateInputSize(e);
         }
 
-        private void btn_ChangeMap_Click(object sender, EventArgs e)
+        private void btn_ChangeSize_Click(object sender, EventArgs e)
         {
             _sizeChanged();
         }
 
-        private void grid_Map_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void btn_GenerateMap_Click(object sender, EventArgs e)
         {
-            var cell = grid_Map[e.ColumnIndex, e.RowIndex];
-            cell.Selected = false;
+            _map.Generate();
 
-            _changeNext(cell);
+            _fillGrid();
+        }
+
+        private void btn_GenerateAll_Click(object sender, EventArgs e)
+        {
+            _randomMap();
         }
 
         private void btn_FindWay_Click(object sender, EventArgs e)
@@ -76,7 +81,30 @@ namespace CGS.Sample.AStar.Forms
             _fillGrid();
         }
 
+        private void grid_Map_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var cell = grid_Map[e.ColumnIndex, e.RowIndex];
+
+            _changeNext(cell);
+        }
+
         #endregion
+
+        private void _randomMap()
+        {
+            var random = new Random();
+            var width = random.Next(Config.MinWidth, Config.MaxWidth);
+            var height = random.Next(Config.MinHeight, Config.MaxHeight);
+
+            txt_Width.Text = width.ToString();
+            txt_Height.Text = height.ToString();
+
+            _sizeChanged();
+
+            _map.Generate();
+
+            _fillGrid();
+        }
 
         private void _valiateInputSize(KeyPressEventArgs e)
         {
@@ -94,15 +122,15 @@ namespace CGS.Sample.AStar.Forms
             var width = int.Parse(txt_Width.Text);
             var height = int.Parse(txt_Height.Text);
 
-            if (width < 1 || width > 39)
+            if (width < Config.MinWidth || width > Config.MaxWidth)
             {
-                MessageBox.Show("Width between 1 and 39", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Width between {Config.MinWidth} and {Config.MaxWidth}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            if (height < 1 || height > 20)
+            if (height < Config.MinHeight || height > Config.MaxHeight)
             {
-                MessageBox.Show("Height between 1 and 20", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show($"Height between {Config.MinHeight} and {Config.MaxHeight}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -148,7 +176,11 @@ namespace CGS.Sample.AStar.Forms
 
         private void _changeNext(DataGridViewCell cell)
         {
-            cell.Value = _map.ChangeNext(cell.ColumnIndex, cell.RowIndex);
+            var value = _map.ChangeNext(cell.ColumnIndex, cell.RowIndex);
+
+            _fillCellColor(cell, value);
+
+            cell.Value = value;
         }
 
         private void _findWay()
@@ -165,11 +197,45 @@ namespace CGS.Sample.AStar.Forms
                     MessageBox.Show("Can't find way!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
         private void _fillGrid()
         {
             for (var x = 0; x < _map.Width; x++)
                 for (var y = 0; y < _map.Height; y++)
-                    grid_Map.Rows[y].Cells[x].Value = _map.Current[x, y];
+                {
+                    var cell = grid_Map.Rows[y].Cells[x];
+                    var value = _map.Current[x, y];
+
+                    _fillCellColor(cell, value);
+
+                    cell.Value = value;
+                }
+        }
+
+        private void _fillCellColor(DataGridViewCell cell, string value)
+        {
+            if (value == Symbol.StartPoint || value == Symbol.EndPoint)
+            {
+                cell.Style.BackColor = Color.Blue;
+                cell.Style.ForeColor = Color.White;
+            }
+            else if (value == Symbol.NotWalkable)
+            {
+                cell.Style.BackColor = Color.Black;
+                cell.Style.ForeColor = Color.White;
+            }
+            else if (value == Symbol.Way)
+            {
+                cell.Style.BackColor = Color.Green;
+                cell.Style.ForeColor = Color.White;
+            }
+            else
+            {
+                cell.Style.BackColor = Color.White;
+                cell.Style.ForeColor = Color.Black;
+            }
+
+            cell.Selected = false;
         }
     }
 }

@@ -51,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\AStar.cs" />
+    <Compile Include="Algorithm\Prim.cs" />
+    <Compile Include="Const\Config.cs" />
+    <Compile Include="Const\Direction.cs" />
     <Compile Include="Infractstructure\MapException.cs" />
     <Compile Include="Const\Symbol.cs" />
     <Compile Include="Forms\Table.cs">

@@ -1,4 +1,5 @@
-﻿using CGS.Sample.AStar.Const;
+﻿using CGS.Sample.AStar.Algorithm;
+using CGS.Sample.AStar.Const;
 using CGS.Sample.AStar.Infractstructure;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,13 @@ namespace CGS.Sample.AStar.Models
             Height = height;
 
             Current = new string[Width, Height];
+
+            _resetPoint();
+        }
+
+        public void Generate()
+        {
+            Prim.Generate(this);
 
             _resetPoint();
         }
@@ -52,6 +60,14 @@ namespace CGS.Sample.AStar.Models
         public bool IsWalkable(int X, int Y)
         {
             return IsExist(X, Y) && Symbol.AllowWalk.Contains(_getCell(X, Y));
+        }
+        public bool IsStartPoint(int X, int Y)
+        {
+            return IsExist(X, Y) && Symbol.StartPoint == _getCell(X, Y);
+        }
+        public bool IsEndPoint(int X, int Y)
+        {
+            return IsExist(X, Y) && Symbol.EndPoint == _getCell(X, Y);
         }
 
         public bool HasStartPoint { get; private set; }
